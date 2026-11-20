@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LapZone – Laptop Store</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7fb;--card:#fff;--tx:#14182b;--mu:#667;--ac:#4f46e5;--bd:#e4e6ef}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1220;--card:#181c30;--tx:#eef0fa;--mu:#9aa0bd;--ac:#8b86ff;--bd:#2a2f4a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.logo{font-weight:800;font-size:1.3rem;color:var(--ac)}nav{display:flex;gap:18px;font-size:.9rem;color:var(--mu)}
+.cart{background:var(--ac);color:#fff;border:0;border-radius:20px;padding:8px 16px;font-weight:600;cursor:pointer}
+.hero{margin:20px 5vw;padding:44px 6vw;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#9333ea);color:#fff;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+.hero h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.6rem)}.hero p{margin:0 0 16px;opacity:.9}
+.hero a{background:#fff;color:#4f46e5;padding:10px 20px;border-radius:10px;font-weight:700;text-decoration:none}
+.lap{width:200px;height:130px;background:#c9cbe8;border:6px solid #2b2f4d;border-radius:10px 10px 4px 4px;position:relative}
+.lap:after{content:"";position:absolute;left:-26px;right:-26px;bottom:-16px;height:10px;background:#2b2f4d;border-radius:0 0 12px 12px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;padding:0 5vw;align-items:center}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 14px;border-radius:20px;cursor:pointer}
+.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+h2{padding:18px 5vw 0;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding:16px 5vw}
+.p{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.img{height:110px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:700;letter-spacing:1px}
+.p small{color:var(--mu)}.price{font-weight:800;font-size:1.1rem}
+.p button{margin-top:auto;border:1px solid var(--ac);color:var(--ac);background:none;border-radius:8px;padding:8px;cursor:pointer;font-weight:600}
+.p button:hover{background:var(--ac);color:#fff}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:8px 5vw 20px;color:var(--mu);font-size:.9rem}
+.feat div{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+footer{padding:22px 5vw;border-top:1px solid var(--bd);color:var(--mu);font-size:.85rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+</style></head><body>
+<header><div class="logo">LapZone</div><nav><span>Home</span><span>Laptops</span><span>Deals</span><span>Support</span></nav><button class="cart">Cart (<span id="n">0</span>)</button></header>
+<section class="hero"><div><h1>Next-gen laptops, best prices</h1><p>Gaming, business aur students ke liye – warranty ke saath.</p><a href="#list">Shop Now</a></div><div class="lap"></div></section>
+<div class="bar" id="chips"></div>
+<h2 id="list">Featured Laptops</h2>
+<div class="grid" id="grid"></div>
+<h2>Why LapZone?</h2>
+<div class="feat"><div>🚚 Free delivery</div><div>🛡️ 1-year warranty</div><div>💳 Easy installments</div><div>🎧 24/7 support</div></div>
+<footer><span>© 2026 LapZone</span><span>Served by Nginx • API: Node • DB: Postgres • Cache: Redis</span></footer>
+<script>
+const P=[["ZenBook 14","Ultrabook","Intel i7 · 16GB · 512GB",185000,"#4f46e5"],["ROG Strix G16","Gaming","i9 · RTX 4060 · 16GB",420000,"#dc2626"],["ThinkPad E14","Business","Ryzen 5 · 8GB · 256GB",125000,"#0f766e"],["MacBook Air M2","Ultrabook","M2 · 8GB · 256GB",330000,"#475569"],["IdeaPad Slim 3","Student","i5 · 8GB · 512GB",98000,"#d97706"],["Legion 5","Gaming","Ryzen 7 · RTX 4050",295000,"#7c3aed"]];
+let cat="All",c=0;const cats=["All",...new Set(P.map(p=>p[1]))];
+function draw(){chips.innerHTML=cats.map(x=>`<button class="chip ${x==cat?"on":""}" data-c="${x}">${x}</button>`).join("");
+grid.innerHTML=P.filter(p=>cat=="All"||p[1]==cat).map(p=>`<div class="p"><div class="img" style="background:${p[4]}">${p[0].split(" ")[0].toUpperCase()}</div><b>${p[0]}</b><small>${p[2]}</small><span class="price">Rs ${p[3].toLocaleString()}</span><button data-add>Add to cart</button></div>`).join("")}
+document.addEventListener("click",e=>{if(e.target.dataset.c){cat=e.target.dataset.c;draw()}if(e.target.dataset.add!==undefined){n.textContent=++c}});
+draw();
+</script></body></html>
