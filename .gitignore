@@ -1,0 +1,7 @@
+.env
+node_modules
+*.bak
+*.bak
+docker-compose.yml.save
+.env
+node_modules/

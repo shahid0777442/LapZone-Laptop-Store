@@ -1,0 +1,45 @@
+services:
+  frontend:
+    build: ./frontend
+    ports: ["8080:80"]          # host:container, sirf yeh public hai
+    depends_on: [api]
+    networks: [front]
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DB_HOST: db
+      REDIS_URL: redis://cache:6379
+    depends_on:
+      db: { condition: service_healthy }
+      cache: { condition: service_healthy }
+    networks: [front, back]
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      retries: 5
+    networks: [back]
+
+  cache:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 5
+    networks: [back]
+
+networks:
+  front: {}
+  back: { internal: true }      # internet/host se isolated
+
+volumes:
+  pgdata:
